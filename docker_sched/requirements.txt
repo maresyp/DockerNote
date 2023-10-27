@@ -1,3 +1,4 @@
-luigi
 docker
 notebook # jupyter
+fastapi
+uvicorn
