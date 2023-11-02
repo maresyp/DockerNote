@@ -1,6 +1,8 @@
 import uvicorn
 import subprocess
 from fastapi import FastAPI, APIRouter
+import argparse
+import sys
 
 
 class WorkerEndpoint:
@@ -28,4 +30,13 @@ if __name__ == '__main__':
     worker = WorkerEndpoint()
     app.include_router(worker.router)
 
-    uvicorn.run(app, host='0.0.0.0', port=8000)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--port', type=int)
+    port = parser.parse_args().port
+    if port is None:
+        raise ValueError('port is not specified')
+
+    # print python version
+    print(sys.version)
+
+    uvicorn.run(app, host='0.0.0.0', port=port)

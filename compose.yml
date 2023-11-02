@@ -1,0 +1,66 @@
+version: "3.9"
+services:
+  web-server:
+    build:
+      ./dockernote_web
+    ports:
+      - 8080:8080
+    develop:
+      watch:
+        - action: rebuild
+          path: ./dockernote_web
+    command: sh -c "python manage.py makemigrations &&
+                    python manage.py migrate &&
+                    python manage.py runserver"
+    depends_on:
+      - balancer
+
+  balancer:
+    build:
+      ./dockernote_master
+    expose:
+      - 8080
+    develop:
+      watch:
+        - action: rebuild
+          path: ./dockernote_master
+    command: sh -c "python manage.py makemigrations &&
+                  python manage.py migrate &&
+                  python manage.py runserver"
+    depends_on:
+      - worker-3.12
+
+  worker-3.12:
+    build:
+      ./dockernote_worker
+    ports: # TODO : hide this port after testing is done
+      - 8312:8312
+    expose:
+      - 8312
+    command: sh -c "python src/api/WorkerEndpoint.py --port 8312"
+    develop:
+      watch:
+        - action: rebuild
+          path: ./dockernote_worker
+
+  db-balancer:
+    image: postgres
+    restart: "on-failure"
+    user: postgres
+    # secrets:
+    #   - db-password
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=example
+      - POSTGRES_PASSWORD=password
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db-data:
