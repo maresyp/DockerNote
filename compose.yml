@@ -1,6 +1,7 @@
 version: "3.9"
 services:
   web-server:
+    container_name: web-server
     build:
       ./dockernote_web
     ports:
@@ -16,6 +17,7 @@ services:
       - balancer
 
   balancer:
+    container_name: balancer
     build:
       ./dockernote_master
     expose:
@@ -28,9 +30,11 @@ services:
                   python manage.py migrate &&
                   python manage.py runserver"
     depends_on:
+      - db-balancer
       - worker-3.12
 
   worker-3.12:
+    container_name: worker
     build:
       ./dockernote_worker
     ports: # TODO : hide this port after testing is done
@@ -44,16 +48,19 @@ services:
           path: ./dockernote_worker
 
   db-balancer:
+    container_name: db-balancer
     image: postgres
-    restart: "on-failure"
     user: postgres
-    # secrets:
-    #   - db-password
+    restart: "on-failure"
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=example
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PORT=5432
+    ports: # TODO : hide this port after testing is done
+      - 5432:5432
     expose:
       - 5432
     healthcheck:
