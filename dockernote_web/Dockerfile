@@ -12,4 +12,4 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 COPY . /code/app
 
 WORKDIR /code/app
-CMD python manage.py makemigrations && python manage.py migrate && python manage.py runserver
+CMD python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0:8000
