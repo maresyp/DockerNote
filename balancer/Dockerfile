@@ -9,7 +9,6 @@ ENV PYTHONUNBUFFERED 1
 COPY ./requirements.txt /code/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
-COPY . /code/app
+COPY ./src /code/app
 
-WORKDIR /code/app
-CMD python manage.py makemigrations && python manage.py migrate && python manage.py runserver
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]

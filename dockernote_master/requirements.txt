@@ -1,4 +1,0 @@
-django==4.2.6
-django_rest_framework
-psycopg2
-python-dotenv
