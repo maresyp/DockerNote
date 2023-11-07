@@ -3,3 +3,5 @@ notebook # jupyter
 fastapi
 pydantic
 uvicorn
+httpx
+python-multipart
