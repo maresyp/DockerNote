@@ -4,6 +4,7 @@ WORKDIR /code
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+ENV PYDEVD_DISABLE_FILE_VALIDATION=1
 
 # install dependencies
 COPY ./requirements.txt /code/requirements.txt
