@@ -10,7 +10,7 @@ from fastapi.responses import FileResponse
 
 app = FastAPI()
 
-async def get_temporary_directory():
+def get_temporary_directory():
     directory = tempfile.TemporaryDirectory()
     try:
         yield directory.name
@@ -18,7 +18,7 @@ async def get_temporary_directory():
         del directory
 
 @app.post("/run_jupyter_notebook")
-async def run_jupyter_notebook(
+def run_jupyter_notebook(
     notebook: UploadFile = File(...),
     directory: tempfile.TemporaryDirectory = Depends(get_temporary_directory)
     ) -> FileResponse:
