@@ -23,7 +23,13 @@ def run_jupyter_notebook(
     directory: tempfile.TemporaryDirectory = Depends(get_temporary_directory)
     ) -> FileResponse:
 
-    temporary_notebook: Path = Path(directory) / notebook.filename
+    if notebook.filename is None:
+        raise HTTPException(status_code=400, detail={
+            'status': 'error',
+            'file': 'no file',
+        })
+
+    temporary_notebook: Path = Path(str(directory)) / notebook.filename
     try:
         with Path.open(temporary_notebook, 'wb') as f:
             shutil.copyfileobj(notebook.file, f)
