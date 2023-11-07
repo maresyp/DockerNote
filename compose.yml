@@ -20,8 +20,6 @@ services:
       ./balancer
     expose:
       - 80
-    ports:
-      - 80:80
     develop:
       watch:
         - action: rebuild
