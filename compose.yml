@@ -5,7 +5,7 @@ services:
     build:
       ./dockernote_web
     ports:
-      - 8000:8000
+      - 8080:8080
     develop:
       watch:
         - action: rebuild
@@ -18,24 +18,48 @@ services:
     container_name: balancer
     build:
       ./balancer
+    ports:
+      - 8000:8000
     expose:
-      - 80
+      - 8000
     develop:
       watch:
         - action: rebuild
           path: ./balancer
     depends_on:
       - db-balancer
-      - worker-3.12
+      - nb_worker_1
+      - nb_worker_2
+      - nb_worker_3
 
-  worker-3.12:
-    container_name: worker
+  nb_worker_1:
+    container_name: nb_worker_1
     build:
       ./dockernote_worker
-    ports: # TODO : hide this port after testing is done
-      - 8312:8312
     expose:
-      - 8312
+      - 8000
+    develop:
+      watch:
+        - action: rebuild
+          path: ./dockernote_worker
+
+  nb_worker_2:
+    container_name: nb_worker_2
+    build:
+      ./dockernote_worker
+    expose:
+      - 8000
+    develop:
+      watch:
+        - action: rebuild
+          path: ./dockernote_worker
+
+  nb_worker_3:
+    container_name: nb_worker_3
+    build:
+      ./dockernote_worker
+    expose:
+      - 8000
     develop:
       watch:
         - action: rebuild
