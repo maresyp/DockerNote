@@ -42,6 +42,7 @@ def run_jupyter_notebook(
         notebook.file.close()
 
     cmd = ['jupyter', 'nbconvert', '--inplace', '--execute', '--to', 'notebook', str(temporary_notebook)]
+    #TODO(<maresyp>): use asyncio.create_subprocess_shell
     result = subprocess.run(cmd, stdout=subprocess.PIPE, timeout=3600)
 
     if result.returncode != 0:

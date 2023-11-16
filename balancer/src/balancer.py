@@ -1,35 +1,38 @@
 from __future__ import annotations
 
-import asyncio
-from typing import Any, Self
+import itertools
+from typing import Self
+
+from . import server
 
 
 class Balancer:
 
     instance: Balancer | None = None
 
-    def __new__(cls, *args: Any, **kwargs: Any) -> Self:
+    def __new__(cls) -> Self:
         if cls.instance is None:
             cls.instance = super().__new__(cls)
         return cls.instance
 
-    def __init__(self, amount_of_workers: int, worker_names: set[str]) -> None:
+    def __init__(self) -> None:
 
-        if amount_of_workers != len(worker_names):
-            raise ValueError('Amount of workers and worker names are not equal')
+        # TODO(maresyp): make this configurable from .env
+        server_names: set[str] = {'nb_worker_1', 'nb_worker_2', 'nb_worker_3'}
+        self.servers: list[server.Server] = [
+            server.Server(f"http://{server_name}:8000") for server_name in server_names
+        ]
+        self.servers_cycle = itertools.cycle(self.servers)
 
-        self.load: asyncio.Queue[Any] = asyncio.Queue(amount_of_workers)
-        self.workers: list[asyncio.Task[None]] = [
-                asyncio.create_task(self.get_worker(worker_names.pop())) for _ in range(amount_of_workers)
-            ]
+    def get_server(self) -> server.Server:
+        server = next(self.servers_cycle)
+        print(f'Requested: {server} without wait.')
+        return server
 
-    async def get_worker(self, worker_name: str) -> None:
-        worker_url: str = f'http://{worker_name}:8000/run_jupyter_notebook'
-        while True:
-            try:
-                load = await self.load.get()
-                async with load['client'] as client:
-                    response = await client.post(worker_url, files=load['files'], timeout=3600)
-                    print(f'{response.content=}')
-            finally:
-                self.load.task_done()
+    def get_free_server(self) -> server.Server | None:
+        for _server in self.servers:
+            if not _server.is_locked():
+                print(f'Requested: {_server} with lock.')
+                return _server
+        print('All servers are busy.')
+        return None
