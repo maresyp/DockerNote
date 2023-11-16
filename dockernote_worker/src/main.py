@@ -4,6 +4,7 @@ import shutil
 import subprocess
 import tempfile
 from pathlib import Path
+import asyncio
 
 from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
@@ -18,11 +19,15 @@ def get_temporary_directory():
         del directory
 
 @app.post("/run_jupyter_notebook")
-def run_jupyter_notebook(
+async def run_jupyter_notebook(
     notebook: UploadFile = File(...),
     directory: tempfile.TemporaryDirectory = Depends(get_temporary_directory)
     ) -> FileResponse:
 
+    await notebook.read()
+    await notebook.seek(0)
+
+    print(f"{notebook.file=}")
     if notebook.filename is None:
         raise HTTPException(status_code=400, detail={
             'status': 'error',
@@ -30,6 +35,7 @@ def run_jupyter_notebook(
         })
 
     temporary_notebook: Path = Path(str(directory)) / notebook.filename
+
     try:
         with Path.open(temporary_notebook, 'wb') as f:
             shutil.copyfileobj(notebook.file, f)
@@ -42,10 +48,15 @@ def run_jupyter_notebook(
         notebook.file.close()
 
     cmd = ['jupyter', 'nbconvert', '--inplace', '--execute', '--to', 'notebook', str(temporary_notebook)]
-    #TODO(<maresyp>): use asyncio.create_subprocess_shell
-    result = subprocess.run(cmd, stdout=subprocess.PIPE, timeout=3600)
+    try:
+        process = await asyncio.create_subprocess_exec(*cmd)
+        await asyncio.wait_for(process.communicate(), timeout=3600)
+    except asyncio.TimeoutError:
+        process.kill()
+        await process.communicate()
 
-    if result.returncode != 0:
+    print(f'[NbConvertApp] {process.returncode=}')
+    if process.returncode != 0:
         raise HTTPException(status_code=500, detail={
         'status': 'error',
         'file': notebook.filename,

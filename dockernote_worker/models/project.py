@@ -13,7 +13,7 @@ class Project(BaseModel):
     """ Container for a single project """
     id: Optional[PyObjectId] = Field(alias="_id", default=None)
     owner_id: PyObjectId = Field(alias="owner_id", default=None)
-    files: list[str] = Field(default_factory=list)
+    files_id: list[str] = Field(default_factory=list)
     model_config = ConfigDict(
         populate_by_name=True,
         arbitrary_types_allowed=True,
