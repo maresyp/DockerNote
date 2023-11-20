@@ -1,11 +1,10 @@
 from pathlib import Path
 
 import aiofiles
-from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 
-from . import balancer
-from . import server
+from . import balancer, server
 
 app = FastAPI()
 load_balancer: balancer.Balancer = balancer.Balancer()
