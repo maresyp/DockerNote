@@ -1,0 +1,69 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<!-- Main Section -->
+<main class="settingsPage profile my-md">
+  <div class="container">
+    <div class="layout">
+      <div class="column column--1of3">
+        <div class="card text-center">
+          <div class="card__body dev">
+            <a class="tag tag--pill tag--main settings__btn tag--lg" href="{% url 'edit_account' %}">Edytuj profil</a>
+            <img class="avatar avatar--xl dev__avatar" src="{{profile.imageURL}}" alt="Profile_logo"/>
+            <h2 class="dev__username">{{user.username}}</h2>
+            <p class="dev__fullname">{{user.first_name }} {{user.last_name}}</p>
+
+            {% if profile.age %}
+            <p class="dev__location">Wiek: {{profile.age}}</p>
+            {% endif %}
+
+            {% if profile.city %}
+            <p class="dev__location">Lokalizacja: {{profile.city}}</p>
+            {% endif %}
+
+            {% if profile.gender %}
+            <p class="dev__location">Płeć: {{profile.gender}}</p>
+            {% endif %}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="column column--2of3">
+        <div class="devInfo">
+          <h3 class="devInfo__title">O mnie</h3>
+          <p class="devInfo__about">{{profile.bio}}</p>
+        </div>
+
+        <div class="settings">
+          <h3 class="settings__title">Moje projekty</h3>
+          <a class="tag tag--pill tag--main settings__btn tag--lg" href="{% url 'add_project' %}"><i
+              class="im im-plus"></i>Dodaj projekt</a>
+        </div>
+
+        <table class="settings__table">
+          {% for project in projects %}
+          <tr>
+            <td class="settings__tableInfo">
+              <a href="{% url 'display_project' project.id %}">{{project.title}}</a>
+              {% for tag in project.top_tags %}
+              <h4 class="tag tag--sub tag--pill">{{ tag.code_tag__name }}</h4>
+              {% endfor %}
+              {% if profile.favorite_project == project %}
+              <a style="float: right;"><span style="font-size: 19px;">&#9733;</span></a>
+              {% else %}
+              <a style="float: right;" href="{% url 'change_fav_project' project.id %}">
+                <span style="font-size: 19px;">&#9734;</span>
+              </a>
+              {% endif %}
+            </td>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+{% endblock %}
