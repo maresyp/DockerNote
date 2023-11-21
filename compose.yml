@@ -95,6 +95,8 @@ services:
       - db-data:/data/db
     expose:
       - 27017
+    ports: # TODO : hide this port after testing is done
+      - 27017:27017
     healthcheck:
       test: [ "CMD", "mongo", "--eval", "db.stats()" ]
       interval: 10s
