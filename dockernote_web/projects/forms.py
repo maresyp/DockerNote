@@ -2,7 +2,7 @@ from django import forms
 from django.forms.widgets import ClearableFileInput
 from django.utils.translation import gettext_lazy as _
 
-from .models import Project
+from .models import Document, Project
 
 
 class ProjectForm(forms.ModelForm):
@@ -28,3 +28,27 @@ class ProjectForm(forms.ModelForm):
 
         for name, field in self.fields.items():
             field.widget.attrs.update({'class': 'input'})
+
+class CustomClearableFileInput(ClearableFileInput):
+    """
+    A custom clearable file input widget. It changes some default texts of the built-in ClearableFileInput.
+    """
+    initial_text = _('Aktualny plik')
+    input_text = _('')
+    clear_checkbox_label = _('Usuń')
+
+class DocumentForm(forms.ModelForm):
+    """
+    This form is used to upload file(s) as Document instances. It uses Django's ModelForm functionality
+    to generate a field based on the Document model's 'file' field. It uses a custom widget to allow
+    multiple file uploads.
+    """
+    file = forms.FileField(widget=CustomClearableFileInput(), label=_('Plik'))
+
+    class Meta:
+        model = Document
+        fields = ('file', )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['file'].widget.attrs.update({'onchange': 'displaySelectedFiles(event)'})

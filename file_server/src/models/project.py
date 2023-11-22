@@ -5,6 +5,8 @@ from pydantic import BaseModel, ConfigDict, Field
 from pydantic.functional_validators import BeforeValidator
 from typing_extensions import Annotated
 
+from .file import File
+
 type PyObjectId = Annotated[str, BeforeValidator(str)]
 
 class Project(BaseModel):
@@ -13,7 +15,7 @@ class Project(BaseModel):
     owner_id: PyObjectId = Field(alias="owner_id")
     title: str = Field(min_length=1, max_length=500)
     description: str | None = Field(default="Ten projekt nie ma jeszcze opisu.")
-    files_id: list[str] | None = Field(default_factory=list)
+    files: list[File] | None = Field(default_factory=list)
     model_config = ConfigDict(
         populate_by_name=True,
         arbitrary_types_allowed=True,

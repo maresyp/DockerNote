@@ -17,3 +17,6 @@ class Project(models.Model):
         # TODO : make request to mongo to create record
         print(self.title)
         super().save(*args, **kwargs)
+
+class Document(models.Model):
+    file = models.FileField()

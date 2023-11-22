@@ -8,8 +8,6 @@ type PyObjectId = Annotated[str, BeforeValidator(str)]
 
 class File(BaseModel):
     """ Container for a single project """
-    id: PyObjectId = Field(alias="_id")
-    project_id: PyObjectId = Field(alias="owner_id")
     name: str = Field(alias="name")
     content: str = Field(alias="content")
     model_config = ConfigDict(
@@ -19,4 +17,4 @@ class File(BaseModel):
 
 class FileCollection(BaseModel):
     """ Container for a collection of projects """
-    projects: list[File] = Field(default_factory=list)
+    files: list[File] = Field(default_factory=list)

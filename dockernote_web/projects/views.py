@@ -1,12 +1,11 @@
-import re
 import requests
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import ProjectForm
-from .models import Project
+from .forms import DocumentForm, ProjectForm
+from .models import Project, Document
 
 
 @login_required(login_url='login')
@@ -62,10 +61,12 @@ def displayMyProject(request, project_id):
     mongo_project = mongo_project.json()
     project.title = mongo_project.get('title')
     project.description = mongo_project.get('description')
+    files = mongo_project['files']
 
     context = {
         'page': page,
         'project': project,
+        'files': files,
         'user': user,
     }
     return render(request, 'projects/display_project.html', context)
@@ -145,4 +146,45 @@ def editProject(request, project_id):
 
 @login_required(login_url='login')
 def add_file(request, project_id):
-    pass
+    """
+    This view is used to add a code to a project. The user must be the owner of the project to add code to it.
+    If the user is not the owner, they are redirected to their account page with an error message.
+    """
+    page = 'add_file'
+    project = get_object_or_404(Project, id=project_id)
+
+    if request.user != project.owner:
+        messages.error(request, 'Nie jesteś właścicielem tego projektu.')
+        return redirect('account')
+
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            for file in request.FILES.getlist('file'):
+                document = Document(file=file)
+
+                try:
+                    File = document.file.read().decode('utf-8')
+                    response = requests.post(f'http://file_server:8000/add_file/{project_id}', files={
+                        'file': (file.name, File),
+                    }, timeout=10)
+
+                    if response.status_code != 200:
+                        messages.error(request, f'Wystąpił błąd podczas przesyłania {document.file.name}.')
+                        raise Exception(f'error: {response.json()["detail"]}')
+                except Exception:
+                    messages.error(request, f'Wystąpił błąd podczas przesyłania {document.file.name}.')
+                    return redirect('add_file', project_id=project_id)
+
+            messages.success(request, 'Pliki zostały przesłane.')
+            return redirect('add_file', project_id=project_id)
+    else:
+        form = DocumentForm()
+
+    context = {
+        'page': page,
+        'form': form,
+        'project': project,
+    }
+
+    return render(request, 'projects/add-edit_code.html', context)

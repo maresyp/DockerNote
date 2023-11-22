@@ -38,7 +38,7 @@ async def get_project(project_id: str) -> Project:
         raise HTTPException(status_code=404, detail={
             'status': 'error: project with this id does not exist',
         })
-    return Project(**project)
+    return project
 
 @app.put(
     "/update_project/{project_id}",
@@ -77,3 +77,37 @@ async def list_projects(owner_id: str) -> dict[str, str]:
         project['_id']: project['title']  for project in projects
     }
 
+@app.post(
+    "/add_file/{project_id}",
+    response_description="Add a new file to a project",
+)
+async def add_file(project_id: str, file: UploadFile = File(...)) -> Response:
+    project = projects_collection.find_one({'_id': project_id})
+    if project is None:
+        raise HTTPException(status_code=404, detail={
+            'status': 'error: project with this id does not exist',
+        })
+
+    try:
+        file_content = file.file.read().decode('utf-8')
+    except Exception as err:
+        raise HTTPException(status_code=500, detail={
+            'status': 'error: cannot read file',
+        }) from err
+    finally:
+        file.file.close()
+
+    project['files'].append({
+        'name': file.filename,
+        'content': file_content,
+    })
+
+    result = projects_collection.find_one_and_update(
+        {'_id': project_id},
+        {'$set': project},
+    )
+    if result is None:
+        raise HTTPException(status_code=404, detail={
+            'status': 'error: project with this id does not exist',
+        })
+    return Response(status_code=200)

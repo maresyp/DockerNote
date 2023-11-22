@@ -51,25 +51,13 @@
 
 
         <table class="settings__table">
-            {% for code in codes %}
+            {% for file in files %}
             <tr class="code-row">
                 <td>
-                    {% if code.code_tag %}
-                    <h4 class="tag tag--sub tag--pill">{{ code.code_tag }}</h4>
-                    {% endif %}
-                    <a class="toggle-code" href="#">{{ code.title }}</a>
+                    <a class="toggle-code" href="#">{{ file.name }}</a>
                 </td>
-                <td class="settings__tableInfo">
-                </td>
-                <td><a class="tag tag--pill tag--red settings__btn tag--lg" href="#" data-href="{% url 'delete_code' code.id %}"
-                        onclick="deleteCode(event, this.getAttribute('data-href'))"><i class="im im-plus"></i>Usuń</a>
-                </td>
-                <td><a class="tag tag--pill tag--main settings__btn tag--lg" href="{% url 'edit_code' code.id %}"><i class=" im
-                        im-plus"></i>Edytuj</a></td>
-                <td>
-                  <div class="progressBarContainer" data-progress="{{ code.plagiarism_ratio }}"></div>
-                  </div>
-                </td>
+                <td class="settings__tableInfo"></td>
+
             </tr>
             <tr class="code-row">
               <td colspan="5">
