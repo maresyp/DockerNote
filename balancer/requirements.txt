@@ -2,7 +2,6 @@ fastapi
 pydantic
 uvicorn
 httpx
-pymongo
 python-multipart
 aiofiles
 docker

@@ -15,7 +15,7 @@ class Profile(models.Model):
     is_active = models.BooleanField(default=False)
     city = models.CharField(max_length=50, null=True, blank=True)
     age = models.PositiveSmallIntegerField(validators=[MinValueValidator(18), MaxValueValidator(125)], null=True, blank=True)
-    bio = models.TextField(max_length=1000, null=True, blank=True)
+    bio = models.TextField(max_length=1000, blank=True, default="Ten użytkownik nie napisał jeszcze nic o sobie.")
     profile_image = models.ImageField(upload_to='profiles', null=True, blank=True, default='profiles/user-default.png')
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default='M')
 

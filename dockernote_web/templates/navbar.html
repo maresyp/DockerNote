@@ -1,0 +1,29 @@
+{% load static %}
+
+<!-- Header Section -->
+<header class="header">
+    <div class="container container--narrow">
+        <a href="" class="header__logo">DockerNote</a>
+        <nav class="header__nav">
+            <input type="checkbox" id="responsive-menu" />
+            <label for="responsive-menu" class="toggle-menu">
+                <span>Menu</span>
+                <div class="toggle-menu__lines"></div>
+            </label>
+            <ul class="header__menu">
+                {% if request.user.is_authenticated %}
+                <li class="header__menuItem">
+                    <a {% if request.resolver_match.url_name == 'account' %}style="color: var(--color-main-light);"{% endif %}
+                    href="{% url 'account' %}">Moje konto</a></li>
+                <li class="header__menuItem"><a href="{% url 'logout' %}" class="btn btn--main">Wyloguj</a></li>
+                {% else %}
+                    {% if page == 'login' %}
+                    <li class="header__menuItem"><a href="{% url 'register' %}" class="btn btn--main">Rejestracja</a></li>
+                    {% else %}
+                    <li class="header__menuItem"><a href="{% url 'login' %}" class="btn btn--main">Logowanie</a></li>
+                    {% endif %}
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</header>

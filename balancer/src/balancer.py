@@ -26,13 +26,13 @@ class Balancer:
 
     def get_server(self) -> server.Server:
         server = next(self.servers_cycle)
-        print(f'Requested: {server} without wait.')
+        print(f'INFO: Load Balancer: Requested: {server} without wait.')
         return server
 
     def get_free_server(self) -> server.Server | None:
         for _server in self.servers:
             if not _server.is_locked():
-                print(f'Requested: {_server} with lock.')
+                print(f'INFO: Load Balancer: Requested: {_server} with lock.')
                 return _server
-        print('All servers are busy.')
+        print('WARN: Load Balancer: All servers are busy.')
         return None

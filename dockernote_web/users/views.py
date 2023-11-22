@@ -5,23 +5,20 @@ from django.contrib.auth.models import User
 from django.db.models import Count, F, Min, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
+from projects.models import Project
 
 from .forms import (
     ChangePasswordForm,
     CustomUserCreationForm,
     ProfileForm,
 )
+from .models import Profile
 
 # Create your views here.
 
 def loginUser(request):
     """
     Login a user.
-
-    :param request: A Django HttpRequest object.
-    :type request: django.http.HttpRequest
-    :returns:  A Django HttpResponse object.
-    :rtype: django.http.HttpResponse
     """
     page = 'login'
 
@@ -41,7 +38,7 @@ def loginUser(request):
 
         if user is not None:
             login(request, user)
-            # Profile.objects.filter(user=user.id).update(is_active=True)
+            Profile.objects.filter(user=user.id).update(is_active=True)
             return redirect(request.GET['next'] if 'next' in request.GET else 'account')
 
         messages.error(request, 'Nazwa użytkownika lub hasło jest niepoprawne.')
@@ -63,7 +60,7 @@ def logoutUser(request):
     user = request.user
 
     # Update user status
-    # Profile.objects.filter(user=user.id).update(is_active=False)
+    Profile.objects.filter(user=user.id).update(is_active=False)
 
     logout(request)
     messages.info(request, 'Pomyślnie wylogowano!')
@@ -73,11 +70,6 @@ def logoutUser(request):
 def registerUser(request):
     """
     Register a new user.
-
-    :param request: A Django HttpRequest object.
-    :type request: django.http.HttpRequest
-    :returns:  A Django HttpResponse object.
-    :rtype: django.http.HttpResponse
     """
     page = 'register'
     form = CustomUserCreationForm()
@@ -114,24 +106,19 @@ def registerUser(request):
 def userAccount(request):
     """
     Retrieve account details of the logged in user, user's projects and favourite tags.
-
-    :param request: A Django HttpRequest object.
-    :type request: django.http.HttpRequest
-    :returns:  A Django HttpResponse object.
-    :rtype: django.http.HttpResponse
     """
     page = 'account'
     user = request.user
     profile = request.user.profile
 
     # Get all projects created by logged in user
-    # projects = Project.objects.filter(owner=user).order_by('creation_date')
+    projects = Project.objects.filter(owner=user).order_by('creation_date')
 
     context = {
         'user': user,
         'profile': profile,
-        # 'projects': projects,
-        'page': page
+        'projects': projects,
+        'page': page,
     }
     return render(request, 'users/account.html', context)
 
@@ -140,11 +127,6 @@ def userAccount(request):
 def editAccount(request):
     """
     Enable the logged in user to edit their account details and password.
-
-    :param request: A Django HttpRequest object.
-    :type request: django.http.HttpRequest
-    :returns:  A Django HttpResponse object.
-    :rtype: django.http.HttpResponse
     """
     page = 'edit_account'
     user = request.user
