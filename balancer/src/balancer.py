@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import itertools
 from typing import Self
 
 from . import server
@@ -22,12 +21,6 @@ class Balancer:
         self.servers: list[server.Server] = [
             server.Server(f"http://{server_name}:8000") for server_name in server_names
         ]
-        self.servers_cycle = itertools.cycle(self.servers)
-
-    def get_server(self) -> server.Server:
-        server = next(self.servers_cycle)
-        print(f'INFO: Load Balancer: Requested: {server} without wait.')
-        return server
 
     def get_free_server(self) -> server.Server | None:
         for _server in self.servers:

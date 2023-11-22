@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 
 import aiofiles
@@ -23,6 +25,7 @@ async def read_root():
         print(f'{response.content=}')
     return {"Hello": "World"}
 
+# TODO : no file is needed, send only id and owner_id
 @app.post("/run_jupyter_notebook")
 async def run_jupyter_notebook(notebook: UploadFile = File(...)) -> FileResponse:
     server: server.Server | None = load_balancer.get_free_server()
@@ -39,19 +42,3 @@ async def run_jupyter_notebook(notebook: UploadFile = File(...)) -> FileResponse
         with open('got.ipynb', 'wb') as file:
             file.write(response.content)
         return None
-
-@app.post("/add_project")
-async def add_project(
-    id: str,
-    owner_id: str,
-) -> Response:
-    _server: server.Server = load_balancer.get_server()
-    async with _server:
-        url: str = _server.url + '/add_project'
-        body = {
-            'id': id,
-            'owner_id': owner_id,
-        }
-        print(f"INFO: Balancer: sending to : {url}")
-        response = await _server.client.post(url, json=body)
-        return Response(status_code=response.status_code)

@@ -11,6 +11,7 @@ services:
         - action: rebuild
           path: ./dockernote_web
     depends_on:
+      - file_server
       - balancer
       - db-web
 
@@ -18,8 +19,6 @@ services:
     container_name: balancer
     build:
       ./balancer
-    ports:
-      - 8000:8000
     expose:
       - 8000
     develop:
@@ -27,10 +26,25 @@ services:
         - action: rebuild
           path: ./balancer
     depends_on:
-      - db-balancer
+      - db-files
       - nb_worker_1
       - nb_worker_2
       - nb_worker_3
+
+  file_server:
+    container_name: file_server
+    build:
+      ./file_server
+    ports:
+      - 8000:8000
+    expose:
+      - 8000
+    develop:
+      watch:
+        - action: rebuild
+          path: ./file_server
+    depends_on:
+      - db-files
 
   nb_worker_1:
     container_name: nb_worker_1
@@ -42,6 +56,8 @@ services:
       watch:
         - action: rebuild
           path: ./dockernote_worker
+    depends_on:
+      - file_server
 
   nb_worker_2:
     container_name: nb_worker_2
@@ -53,6 +69,8 @@ services:
       watch:
         - action: rebuild
           path: ./dockernote_worker
+    depends_on:
+      - file_server
 
   nb_worker_3:
     container_name: nb_worker_3
@@ -64,6 +82,8 @@ services:
       watch:
         - action: rebuild
           path: ./dockernote_worker
+    depends_on:
+      - file_server
 
   db-web:
     container_name: db-web
@@ -87,8 +107,8 @@ services:
       timeout: 5s
       retries: 5
 
-  db-balancer:
-    container_name: db-balancer
+  db-files:
+    container_name: db-files
     image: mongo
     restart: "on-failure"
     volumes:

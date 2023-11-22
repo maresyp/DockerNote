@@ -1,4 +1,3 @@
-notebook # jupyter
 fastapi
 pydantic
 uvicorn
