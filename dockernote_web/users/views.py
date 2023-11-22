@@ -1,3 +1,4 @@
+import requests
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -112,7 +113,14 @@ def userAccount(request):
     profile = request.user.profile
 
     # Get all projects created by logged in user
+    mongo_projects = requests.get(url='http://file_server:8000/list_projects/' + str(user.id), timeout=10)
+    if mongo_projects.status_code != 200:
+        raise Exception(f'error: {mongo_projects.json()["detail"]}')
+    mongo_projects = mongo_projects.json()
+
     projects = Project.objects.filter(owner=user).order_by('creation_date')
+    for project in projects:
+        project.title = mongo_projects.get(str(project.id))
 
     context = {
         'user': user,

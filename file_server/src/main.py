@@ -6,7 +6,7 @@ import pymongo
 from fastapi import Depends, FastAPI, File, HTTPException, Response, UploadFile
 from fastapi.responses import FileResponse
 
-from .models.project import Project
+from .models.project import Project, ProjectCollection
 
 app = FastAPI()
 client: pymongo.MongoClient[Any] = pymongo.MongoClient('db-files')
@@ -27,3 +27,13 @@ async def add_project(project: Project) -> Response:
             'status': 'error: project with this id already exists',
         }) from err
     return Response(status_code=201)
+
+@app.get(
+    "/list_projects/{owner_id}",
+    response_description="Get projects names corresponding to the given owner_id",
+    )
+async def list_projects(owner_id: str) -> dict[str, str]:
+    projects = list(projects_collection.find({'owner_id': owner_id}))
+    return {
+        project['_id']: project['title']  for project in projects
+    }

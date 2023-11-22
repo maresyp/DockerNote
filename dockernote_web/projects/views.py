@@ -28,7 +28,8 @@ def addProject(request):
             else:
                 new_project = form.save(commit=False)
                 new_project.owner = request.user
-                new_project.parent = None
+                new_project.title = title
+                new_project.description = description
                 new_project.save()
 
                 messages.success(request, 'Projekt został poprawnie utworzony.')
