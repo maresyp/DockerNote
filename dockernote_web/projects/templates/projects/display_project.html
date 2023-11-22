@@ -36,12 +36,11 @@
           <h3 class="settings__title">{{project.title}}</h3>
 
           <div>
-            <a class="tag tag--pill tag--red settings__btn tag--lg" href="#" data-href="{% url 'delete_project' project.id %}"
-            onclick="deleteProject(event, this.getAttribute('data-href'))"><i class="im im-plus"></i>Usuń</a>
-
+            <a class="tag tag--pill tag--red settings__btn tag--lg" href="{% url 'delete_project' project.id %}">
+                <i class="im im-plus"></i>Usuń</a>
             <a class="tag tag--pill tag--main settings__btn tag--lg" href="{% url 'edit_project' project.id %}"><i
                 class="im im-plus"></i>Edytuj</a>
-            <a class="tag tag--pill tag--main settings__btn tag--lg" href="{% url 'add_code' project.id %}"><i
+            <a class="tag tag--pill tag--main settings__btn tag--lg" href="{% url 'add_file' project.id %}"><i
                     class="im im-plus"></i>Dodaj Pliki</a>
         </div>
         </div>

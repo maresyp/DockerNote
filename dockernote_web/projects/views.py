@@ -1,3 +1,5 @@
+import re
+import requests
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -53,14 +55,94 @@ def displayMyProject(request, project_id):
     user = request.user
 
     project = get_object_or_404(Project, id=project_id)
-    # codes = Code.objects.filter(
-    #     Q(project__owner=user) & Q(project=project)
-    # ).order_by('-creation_date')
+    mongo_project = requests.get(f'http://file_server:8000/get_project/{project_id}', timeout=10)
+    if mongo_project.status_code != 200:
+        raise Exception(f'error: {mongo_project.json()["detail"]}')
+
+    mongo_project = mongo_project.json()
+    project.title = mongo_project.get('title')
+    project.description = mongo_project.get('description')
 
     context = {
         'page': page,
         'project': project,
-        # 'codes': codes,
         'user': user,
     }
-    return render(request, 'Projects/display_project.html', context)
+    return render(request, 'projects/display_project.html', context)
+
+@login_required(login_url='login')
+def deleteProject(request, project_id):
+    """
+    This view is used to handle the deletion of an existing project. The user must be the owner of the project to delete it.
+    If the user is not the owner, they are redirected to their account page with an error message.
+    """
+    project = get_object_or_404(Project, id=project_id)
+
+    # check if user is owner of project
+    if request.user != project.owner:
+        messages.error(request, 'Nie jesteś właścicielem tego projektu.')
+        return redirect('account')
+
+    response = requests.delete(f'http://file_server:8000/delete_project/{project_id}', timeout=10)
+    if response.status_code != 200:
+        messages.error(request, 'Wystąpił problem podczas usuwania projektu.')
+        raise Exception(f'error: {response.json()["detail"]}')
+
+    project.delete()
+    messages.success(request, 'Projekt został usunięty.')
+    return redirect('account')
+
+@login_required(login_url='login')
+def editProject(request, project_id):
+    """
+    This view is used to handle the editing of an existing project. The user must be the owner of the project to edit it.
+    If the user is not the owner, they are redirected to their account page with an error message.
+    """
+    page = 'edit_project'
+    project = get_object_or_404(Project, id=project_id)
+
+    if request.user != project.owner:
+        messages.error(request, 'Nie jesteś właścicielem tego projektu.')
+        return redirect('account')
+
+    if request.method == 'POST':
+        form = ProjectForm(request.POST, instance=project)
+        if form.is_valid():
+            title = form.cleaned_data.get('title')
+            description = form.cleaned_data.get('description')
+
+            if not title:
+                form.add_error('title', 'Podaj tytuł dla swojego projektu.')
+            elif not description:
+                form.add_error('description', 'Dodaj krótki opis o tym czego dotyczy twój projekt')
+            else:
+                response = requests.put(f'http://file_server:8000/update_project/{project_id}', json={
+                    'title': title,
+                    'description': description,
+                }, timeout=10)
+
+                if response.status_code != 200:
+                    messages.error(request, 'Wystąpił problem podczas edytowania projektu.')
+                    raise Exception(f'error: {response.json()["detail"]}')
+
+                messages.success(request, 'Zapisano zmiany.')
+    else:
+        form = ProjectForm(instance=project)
+        response = requests.get(f'http://file_server:8000/get_project/{project_id}', timeout=10)
+        if response.status_code != 200:
+            raise Exception(f'error: {response.json()["detail"]}')
+
+        mongo_project = response.json()
+        form.fields['title'].initial = mongo_project.get('title')
+        form.fields['description'].initial = mongo_project.get('description')
+
+    context = {
+        'page': page,
+        'form': form,
+        'project': project,
+    }
+    return render(request, 'projects/add-edit_project.html', context)
+
+@login_required(login_url='login')
+def add_file(request, project_id):
+    pass

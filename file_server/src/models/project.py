@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime
-
+from bson import ObjectId
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.functional_validators import BeforeValidator
 from typing_extensions import Annotated
@@ -18,6 +17,15 @@ class Project(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
         arbitrary_types_allowed=True,
+    )
+
+class UpdateProject(BaseModel):
+    """ Container for a single project """
+    title: str | None = None
+    description: str | None = None
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+        json_encoders={ObjectId: str},
     )
 
 class ProjectCollection(BaseModel):
