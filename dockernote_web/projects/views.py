@@ -1,11 +1,10 @@
 import requests
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import DocumentForm, ProjectForm
-from .models import Project, Document
+from .models import Document, Project
 
 
 @login_required(login_url='login')
@@ -55,13 +54,16 @@ def displayMyProject(request, project_id):
 
     project = get_object_or_404(Project, id=project_id)
     mongo_project = requests.get(f'http://file_server:8000/get_project/{project_id}', timeout=10)
-    if mongo_project.status_code != 200:
+    if mongo_project.status_code != requests.codes.all_ok:
         raise Exception(f'error: {mongo_project.json()["detail"]}')
 
     mongo_project = mongo_project.json()
     project.title = mongo_project.get('title')
     project.description = mongo_project.get('description')
     files = mongo_project['files']
+
+    for file in files:
+        file['extension'] = file['name'].split('.')[-1]
 
     context = {
         'page': page,
@@ -85,7 +87,7 @@ def deleteProject(request, project_id):
         return redirect('account')
 
     response = requests.delete(f'http://file_server:8000/delete_project/{project_id}', timeout=10)
-    if response.status_code != 200:
+    if response.status_code != requests.codes.all_ok:
         messages.error(request, 'Wystąpił problem podczas usuwania projektu.')
         raise Exception(f'error: {response.json()["detail"]}')
 
@@ -122,7 +124,7 @@ def editProject(request, project_id):
                     'description': description,
                 }, timeout=10)
 
-                if response.status_code != 200:
+                if response.status_code != requests.codes.all_ok:
                     messages.error(request, 'Wystąpił problem podczas edytowania projektu.')
                     raise Exception(f'error: {response.json()["detail"]}')
 
@@ -130,7 +132,7 @@ def editProject(request, project_id):
     else:
         form = ProjectForm(instance=project)
         response = requests.get(f'http://file_server:8000/get_project/{project_id}', timeout=10)
-        if response.status_code != 200:
+        if response.status_code != requests.codes.all_ok:
             raise Exception(f'error: {response.json()["detail"]}')
 
         mongo_project = response.json()
@@ -168,12 +170,13 @@ def add_file(request, project_id):
                     response = requests.post(f'http://file_server:8000/add_file/{project_id}', files={
                         'file': (file.name, File),
                     }, timeout=10)
-
-                    if response.status_code != 200:
+                    if response.status_code == requests.codes.conflict:
+                        messages.error(request, f'Plik {document.file.name} już istnieje.')
+                        raise Exception(f'error: {response.json()["detail"]}')
+                    if response.status_code != requests.codes.all_ok:
                         messages.error(request, f'Wystąpił błąd podczas przesyłania {document.file.name}.')
                         raise Exception(f'error: {response.json()["detail"]}')
-                except Exception:
-                    messages.error(request, f'Wystąpił błąd podczas przesyłania {document.file.name}.')
+                except Exception as err:
                     return redirect('add_file', project_id=project_id)
 
             messages.success(request, 'Pliki zostały przesłane.')
@@ -188,3 +191,47 @@ def add_file(request, project_id):
     }
 
     return render(request, 'projects/add-edit_code.html', context)
+
+
+@login_required(login_url='login')
+def delete_file(request, project_id, file_name):
+    """
+    This view is used to handle the deletion of an existing files. The user must be the owner of the project to delete it.
+    If the user is not the owner, they are redirected to their account page with an error message.
+    """
+    project = get_object_or_404(Project, id=project_id)
+    if request.user != project.owner:
+        messages.error(request, 'Nie jesteś właścicielem tego projektu.')
+        return redirect('account')
+
+    response = requests.delete(f'http://file_server:8000/delete_file/{project_id}/{file_name}', timeout=10)
+    if response.status_code != requests.codes.all_ok:
+        messages.error(request, 'Wystąpił problem podczas usuwania pliku.')
+        return redirect('display_project', project_id=project.id)
+
+    messages.success(request, 'Kod został usunięty.')
+    return redirect('display_project', project_id=project.id)
+
+@login_required(login_url='login')
+def run_file(request, project_id, file_name):
+    """
+    This view is used to run an existing file. The user must be the owner of the project to run it.
+    If the user is not the owner, they are redirected to their account page with an error message.
+    """
+    project = get_object_or_404(Project, id=project_id)
+    if request.user != project.owner:
+        messages.error(request, 'Nie jesteś właścicielem tego projektu.')
+        return redirect('account')
+
+    response = requests.get(f'http://balancer:8000/run_file/{project_id}/{file_name}', timeout=10)
+
+    if response.status_code == requests.codes.service_unavailable:
+        messages.error(request, 'Wszystkie serwery są zajęte.')
+        return redirect('display_project', project_id=project.id)
+
+    if response.status_code != requests.codes.all_ok:
+        messages.error(request, 'Wystąpił problem podczas uruchamiania kodu.')
+        return redirect('display_project', project_id=project.id)
+
+    messages.success(request, 'Kod został dodany do kolejki.')
+    return redirect('display_project', project_id=project.id)

@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import Any
 
 import pymongo
-from fastapi import Depends, FastAPI, File, HTTPException, Response, UploadFile
+from fastapi import FastAPI, File, HTTPException, Response, UploadFile
 from fastapi.responses import FileResponse
 
-from .models.project import Project, ProjectCollection, UpdateProject
+from .models.project import Project, UpdateProject
 
 app = FastAPI()
 client: pymongo.MongoClient[Any] = pymongo.MongoClient('db-files')
@@ -88,6 +88,11 @@ async def add_file(project_id: str, file: UploadFile = File(...)) -> Response:
             'status': 'error: project with this id does not exist',
         })
 
+    if any(f['name'] == file.filename for f in project['files']):
+        raise HTTPException(status_code=409, detail={
+            'status': 'error: file with this name already exists',
+        })
+
     try:
         file_content = file.file.read().decode('utf-8')
     except Exception as err:
@@ -101,6 +106,31 @@ async def add_file(project_id: str, file: UploadFile = File(...)) -> Response:
         'name': file.filename,
         'content': file_content,
     })
+
+    result = projects_collection.find_one_and_update(
+        {'_id': project_id},
+        {'$set': project},
+    )
+    if result is None:
+        raise HTTPException(status_code=404, detail={
+            'status': 'error: project with this id does not exist',
+        })
+    return Response(status_code=200)
+
+@app.delete(
+    "/delete_file/{project_id}/{file_name}",
+    response_description="Delete a file from a project",
+)
+async def delete_file(project_id: str, file_name: str) -> Response:
+    project = projects_collection.find_one({'_id': project_id})
+    if project is None:
+        raise HTTPException(status_code=404, detail={
+            'status': 'error: project with this id does not exist',
+        })
+
+    project['files'] = [
+        file for file in project['files'] if file['name'] != file_name
+    ]
 
     result = projects_collection.find_one_and_update(
         {'_id': project_id},

@@ -17,11 +17,14 @@ def get_temporary_directory():
     finally:
         del directory
 
-@app.post("/run_jupyter_notebook")
+@app.post("/run_jupyter_notebook/{project_id}/{file_name}")
 async def run_jupyter_notebook(
-    notebook: UploadFile = File(...),
+    project_id: str,
+    file_name: str,
     directory: tempfile.TemporaryDirectory = Depends(get_temporary_directory)
-    ) -> FileResponse:
+    ) -> Response:
+
+    return Response(status_code=200)
 
     await notebook.read()
     await notebook.seek(0)
