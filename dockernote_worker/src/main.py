@@ -5,10 +5,12 @@ import shutil
 import tempfile
 from pathlib import Path
 
+import httpx
 from fastapi import Depends, FastAPI, File, HTTPException, Response, UploadFile
 from fastapi.responses import FileResponse
 
 app = FastAPI()
+client = httpx.AsyncClient()
 
 def get_temporary_directory():
     directory = tempfile.TemporaryDirectory()
@@ -24,32 +26,14 @@ async def run_jupyter_notebook(
     directory: tempfile.TemporaryDirectory = Depends(get_temporary_directory)
     ) -> Response:
 
-    return Response(status_code=200)
+    project = await client.get(f'http://file_server:8000/get_project/{project_id}')
+    for file in project.json()['files']:
+        with open(Path(str(directory)) / file['name'], 'wb') as f:
+            f.write(bytes(file['content'], 'utf-8'))
 
-    await notebook.read()
-    await notebook.seek(0)
+    temporary_notebook: Path = Path(str(directory)) / file_name
 
-    print(f"{notebook.file=}")
-    if notebook.filename is None:
-        raise HTTPException(status_code=400, detail={
-            'status': 'error',
-            'file': 'no file',
-        })
-
-    temporary_notebook: Path = Path(str(directory)) / notebook.filename
-
-    try:
-        with Path.open(temporary_notebook, 'wb') as f:
-            shutil.copyfileobj(notebook.file, f)
-    except OSError as err:
-        raise HTTPException(status_code=500, detail={
-            'status': 'error',
-            'file': notebook.filename,
-        }) from err
-    finally:
-        notebook.file.close()
-
-    cmd = ['jupyter', 'nbconvert', '--inplace', '--execute', '--to', 'notebook', str(temporary_notebook)]
+    cmd = ['jupyter', 'nbconvert', '--execute', '--to', 'notebook', str(temporary_notebook), '--output', 'result.ipynb']
     try:
         process = await asyncio.create_subprocess_exec(*cmd)
         await asyncio.wait_for(process.communicate(), timeout=3600)
@@ -60,9 +44,13 @@ async def run_jupyter_notebook(
     print(f'[NbConvertApp] {process.returncode=}')
     if process.returncode != 0:
         raise HTTPException(status_code=500, detail={
-        'status': 'error',
-        'file': notebook.filename,
+        'status': 'error during notebook execution',
     })
 
-    return FileResponse(temporary_notebook)
+    result_file = Path(str(directory)) / 'result.ipynb'
+    result = await client.post(f'http://file_server:8000/add_file/{project_id}', files={
+        'file': (result_file.name, result_file.read_bytes()),
+    })
+
+    return Response(status_code=200)
 
