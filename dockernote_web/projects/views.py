@@ -1,6 +1,7 @@
 import requests
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import DocumentForm, ProjectForm
@@ -234,4 +235,35 @@ def run_file(request, project_id, file_name):
         return redirect('display_project', project_id=project.id)
 
     messages.success(request, 'Kod został dodany do kolejki.')
+    return redirect('display_project', project_id=project.id)
+
+@login_required(login_url='login')
+def download_file(request, project_id, file_name):
+    """
+    This view is used to download an existing file. The user must be the owner of the project to download it.
+    If the user is not the owner, they are redirected to their account page with an error message.
+    """
+    project = get_object_or_404(Project, id=project_id)
+    if request.user != project.owner:
+        messages.error(request, 'Nie jesteś właścicielem tego projektu.')
+        return redirect('account')
+
+    response = requests.get(f'http://file_server:8000/get_project/{project_id}', timeout=10)
+
+    if response.status_code == requests.codes.not_found:
+        messages.error(request, 'Plik nie istnieje.')
+        return redirect('display_project', project_id=project.id)
+
+    if response.status_code != requests.codes.all_ok:
+        messages.error(request, 'Wystąpił problem podczas pobierania pliku.')
+        return redirect('display_project', project_id=project.id)
+
+    project = response.json()
+    for file in project['files']:
+        if file['name'] == file_name:
+            response = HttpResponse(file['content'], content_type='text/plain')
+            response['Content-Disposition'] = f'attachment; filename={file_name}'
+            return response
+
+    messages.error()(request, 'Plik nie istnieje.')
     return redirect('display_project', project_id=project.id)

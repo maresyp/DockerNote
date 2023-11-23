@@ -60,7 +60,7 @@
                 {% if file.extension == 'ipynb' %}
                 <td><a class="tag tag--pill tag--main settings__btn tag--lg" href="{% url 'run_file' project.id file.name %}"><i class="im im-plus"></i>Uruchom</a></td>
                 {% endif %}
-                <td><a class="tag tag--pill tag--main settings__btn tag--lg" href="#"><i class="im im-plus"></i>Pobierz</a></td>
+                <td><a class="tag tag--pill tag--main settings__btn tag--lg" href="{% url 'download_file' project.id file.name %}" download><i class="im im-plus"></i>Pobierz</a></td>
                 <td><a class="tag tag--pill tag--red settings__btn tag--lg" href="{% url 'delete_file' project.id file.name %}"><i class="im im-plus"></i>🗑</a></td>
             </tr>
             <tr class="code-row">
