@@ -4,4 +4,3 @@ uvicorn
 httpx
 python-multipart
 aiofiles
-docker
