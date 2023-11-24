@@ -122,10 +122,17 @@ def userAccount(request):
     for project in projects:
         project.title = mongo_projects.get(str(project.id))
 
+    # get quote of the day
+    response = requests.post('https://zenquotes.io/api/today/', timeout=10)
+    quote: str = 'There is no quote of the day.'
+    if response.status_code == requests.codes.all_okay:
+        quote = response.json()[0]['q']
+
     context = {
         'user': user,
         'profile': profile,
         'projects': projects,
+        'quote': quote,
         'page': page,
     }
     return render(request, 'users/account.html', context)
