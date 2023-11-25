@@ -189,4 +189,4 @@ def editAccount(request):
         'page': page,
     }
 
-    return render(request, 'users/user_profile_form.html', context)
+    return render(request, 'users/edit_account.html', context)
