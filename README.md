@@ -1,2 +1,2 @@
 # DockerNote
-![Architecture](misc/architecture.drawio.svg)
+![Architecture](misc/architecture.png)
