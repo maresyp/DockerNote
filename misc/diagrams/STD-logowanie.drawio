@@ -1,0 +1,81 @@
+<mxfile host="app.diagrams.net" modified="2024-02-01T19:53:57.367Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3 Safari/605.1.15" etag="ZYVntRg49JGJU93ZXoLw" version="23.0.2" type="device">
+  <diagram name="Strona-1" id="P0eVOyG5_RVOKSIzQoQu">
+    <mxGraphModel dx="1216" dy="754" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="TKzSG03XWiKY2Yh5fDTk-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="TKzSG03XWiKY2Yh5fDTk-1" target="TKzSG03XWiKY2Yh5fDTk-4" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="W2_SeDogZYx24qSGiZyL-1" value="Wyświetlenie strony logowania" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="TKzSG03XWiKY2Yh5fDTk-5">
+          <mxGeometry x="-0.36" y="3" relative="1" as="geometry">
+            <mxPoint x="82" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TKzSG03XWiKY2Yh5fDTk-1" value="" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_2;whiteSpace=wrap;fillColor=#000000;" parent="1" vertex="1">
+          <mxGeometry x="140" y="160" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TKzSG03XWiKY2Yh5fDTk-2" value="" style="ellipse;shape=doubleEllipse;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#EA6B66;perimeterSpacing=0;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry x="140" y="470" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TKzSG03XWiKY2Yh5fDTk-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="TKzSG03XWiKY2Yh5fDTk-4" target="TKzSG03XWiKY2Yh5fDTk-6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="W2_SeDogZYx24qSGiZyL-4" value="Poprawne dane logowania" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="TKzSG03XWiKY2Yh5fDTk-7">
+          <mxGeometry x="-0.25" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="W2_SeDogZYx24qSGiZyL-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="TKzSG03XWiKY2Yh5fDTk-4" target="W2_SeDogZYx24qSGiZyL-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="W2_SeDogZYx24qSGiZyL-5" value="Błędne dane logowania" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="W2_SeDogZYx24qSGiZyL-3">
+          <mxGeometry x="-0.3576" y="3" relative="1" as="geometry">
+            <mxPoint x="12" y="-7" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TKzSG03XWiKY2Yh5fDTk-4" value="Użytkownik wprowadza dane logowania" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="95" y="240" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TKzSG03XWiKY2Yh5fDTk-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="TKzSG03XWiKY2Yh5fDTk-6" target="TKzSG03XWiKY2Yh5fDTk-2" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="155" y="470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TKzSG03XWiKY2Yh5fDTk-6" value="Użytkownik zostaje zalogowany" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="95" y="340" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="W2_SeDogZYx24qSGiZyL-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="W2_SeDogZYx24qSGiZyL-2" target="TKzSG03XWiKY2Yh5fDTk-2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="310" y="485" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="W2_SeDogZYx24qSGiZyL-8" value="Opuszczenie strony" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="W2_SeDogZYx24qSGiZyL-7">
+          <mxGeometry x="0.1111" relative="1" as="geometry">
+            <mxPoint y="15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="W2_SeDogZYx24qSGiZyL-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="323" y="210" as="targetPoint" />
+            <mxPoint x="373" y="370" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="414" y="370" />
+              <mxPoint x="414" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="W2_SeDogZYx24qSGiZyL-10" value="Ponowienie próby logowania" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="W2_SeDogZYx24qSGiZyL-9">
+          <mxGeometry x="-0.363" y="3" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="W2_SeDogZYx24qSGiZyL-2" value="Komunikat o błędzie" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="250" y="340" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

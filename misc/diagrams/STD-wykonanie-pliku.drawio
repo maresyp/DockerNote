@@ -1,0 +1,67 @@
+<mxfile host="app.diagrams.net" modified="2024-01-26T12:54:32.615Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2.1 Safari/605.1.15" etag="9QHfGb1vuqmB815AurWw" version="23.0.2" type="device">
+  <diagram name="Strona-1" id="EZPd-ufFT80U8SujKmah">
+    <mxGraphModel dx="952" dy="754" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Hhae-PWM2MQu6xHZyx91-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Hhae-PWM2MQu6xHZyx91-2" target="Hhae-PWM2MQu6xHZyx91-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Hhae-PWM2MQu6xHZyx91-2" value="" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_2;whiteSpace=wrap;fillColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="140" y="160" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Hhae-PWM2MQu6xHZyx91-3" value="" style="ellipse;shape=doubleEllipse;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#EA6B66;perimeterSpacing=0;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="140" y="800" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Hhae-PWM2MQu6xHZyx91-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Hhae-PWM2MQu6xHZyx91-5" target="Hhae-PWM2MQu6xHZyx91-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Hhae-PWM2MQu6xHZyx91-5" value="Uruchomienie end pointa Pracowników" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="95" y="240" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Hhae-PWM2MQu6xHZyx91-20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Hhae-PWM2MQu6xHZyx91-8" target="Hhae-PWM2MQu6xHZyx91-19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Hhae-PWM2MQu6xHZyx91-8" value="Oczekiwanie na przydzielenie zadania" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="95" y="340" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Hhae-PWM2MQu6xHZyx91-22" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Hhae-PWM2MQu6xHZyx91-19" target="Hhae-PWM2MQu6xHZyx91-21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Hhae-PWM2MQu6xHZyx91-19" value="Pobranie potrzebnych plików projektu z bazy danych" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="95" y="440" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Hhae-PWM2MQu6xHZyx91-24" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Hhae-PWM2MQu6xHZyx91-21" target="Hhae-PWM2MQu6xHZyx91-23">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Hhae-PWM2MQu6xHZyx91-25" value="Błąd podczas wykonywania pliku" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="Hhae-PWM2MQu6xHZyx91-24">
+          <mxGeometry x="-0.0857" y="2" relative="1" as="geometry">
+            <mxPoint x="4" y="-8" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Hhae-PWM2MQu6xHZyx91-27" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Hhae-PWM2MQu6xHZyx91-21" target="Hhae-PWM2MQu6xHZyx91-26">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Hhae-PWM2MQu6xHZyx91-21" value="Uruchomienie procesu wykonywania pliku" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="95" y="540" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Hhae-PWM2MQu6xHZyx91-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Hhae-PWM2MQu6xHZyx91-23" target="Hhae-PWM2MQu6xHZyx91-3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="474" y="815" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Hhae-PWM2MQu6xHZyx91-23" value="Zwrócenie informacji o błędzie" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="414" y="540" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Hhae-PWM2MQu6xHZyx91-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Hhae-PWM2MQu6xHZyx91-26" target="Hhae-PWM2MQu6xHZyx91-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Hhae-PWM2MQu6xHZyx91-26" value="Umieszczenie pliku wynikowego w bazie danych" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="95" y="650" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
